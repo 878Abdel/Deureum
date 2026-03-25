@@ -1,5 +1,4 @@
-﻿"use client";
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
@@ -37,7 +36,7 @@ const FloatingCards: React.FC = () => (
   </div>
 );
 
-const Field: React.FC<{
+const ChampInput: React.FC<{
   label: string;
   type?: string;
   name: string;
@@ -46,7 +45,7 @@ const Field: React.FC<{
   placeholder?: string;
   suffix?: React.ReactNode;
 }> = ({ label, type = "text", name, value, onChange, placeholder, suffix }) => {
-  const [focused, setFocused] = useState(false);
+  const [enFocus, setEnFocus] = useState(false);
   return (
     <div>
       <label style={{ display: "block", fontFamily: "'Satoshi', sans-serif",
@@ -59,15 +58,15 @@ const Field: React.FC<{
           type={type} name={name} value={value}
           onChange={onChange} placeholder={placeholder}
           required
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onFocus={() => setEnFocus(true)}
+          onBlur={() => setEnFocus(false)}
           style={{
             width: "100%", boxSizing: "border-box",
             padding: suffix ? "13px 44px 13px 16px" : "13px 16px",
             borderRadius: 14, fontFamily: "'Satoshi', sans-serif",
             fontSize: 13, fontWeight: 400, color: TEXT_PRIMARY,
-            background: focused ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.38)",
-            border: `1px solid ${focused ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
+            background: enFocus ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.38)",
+            border: `1px solid ${enFocus ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
             outline: "none", transition: "all 0.2s",
           }}
         />
@@ -82,15 +81,15 @@ const Field: React.FC<{
 
 export default function Login() {
   const navigate = useNavigate();
-  const [showPw, setShowPw]   = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [form, setForm]       = useState({ email: "", password: "" });
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(p => ({ ...p, [e.target.name]: e.target.value }));
+  const [voirMdp, setVoirMdp]   = useState(false);
+  const [enChargement, setEnChargement] = useState(false);
+  const [formulaire, setFormulaire]       = useState({ email: "", password: "" });
+  const surChangement = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setFormulaire(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const soumettreFormulaire = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setEnChargement(true);
     setTimeout(() => navigate("/dashboard"), 1600);
   };
 
@@ -191,19 +190,19 @@ export default function Login() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <Field label="Email ou téléphone" name="email" value={form.email}
-              onChange={onChange} placeholder="moussa@exemple.com" />
+          <form onSubmit={soumettreFormulaire} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <ChampInput label="Email ou téléphone" name="email" value={formulaire.email}
+              onChange={surChangement} placeholder="moussa@exemple.com" />
 
-            <Field
-              label="Mot de passe" type={showPw ? "text" : "password"}
-              name="password" value={form.password}
-              onChange={onChange} placeholder="••••••••"
+            <ChampInput
+              label="Mot de passe" type={voirMdp ? "text" : "password"}
+              name="password" value={formulaire.password}
+              onChange={surChangement} placeholder="••••••••"
               suffix={
-                <button type="button" onClick={() => setShowPw(!showPw)}
+                <button type="button" onClick={() => setVoirMdp(!voirMdp)}
                   style={{ background: "none", border: "none", cursor: "pointer",
                     color: "rgba(255,255,255,0.3)", padding: 0, display: "flex" }}>
-                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                  {voirMdp ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               }
             />
@@ -219,23 +218,23 @@ export default function Login() {
             </div>
 
             <motion.button
-              type="submit" disabled={loading}
-              whileHover={{ scale: loading ? 1 : 1.01 }}
-              whileTap={{ scale: loading ? 1 : 0.98 }}
+              type="submit" disabled={enChargement}
+              whileHover={{ scale: enChargement ? 1 : 1.01 }}
+              whileTap={{ scale: enChargement ? 1 : 0.98 }}
               style={{
                 marginTop: 8, width: "100%", padding: "14px 0",
-                borderRadius: 14, border: "none", cursor: loading ? "default" : "pointer",
-                background: loading ? "rgba(255,255,255,0.1)" : "#fff",
-                color: loading ? "rgba(255,255,255,0.4)" : "#000",
+                borderRadius: 14, border: "none", cursor: enChargement ? "default" : "pointer",
+                background: enChargement ? "rgba(255,255,255,0.1)" : "#fff",
+                color: enChargement ? "rgba(255,255,255,0.4)" : "#000",
                 fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                 transition: "background 0.2s, color 0.2s",
                 fontFamily: "'Satoshi', sans-serif",
               }}
-              onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLElement).style.background = "#E8FF5A"; }}
-              onMouseLeave={e => { if (!loading) (e.currentTarget as HTMLElement).style.background = "#fff"; }}
+              onMouseEnter={e => { if (!enChargement) (e.currentTarget as HTMLElement).style.background = "#E8FF5A"; }}
+              onMouseLeave={e => { if (!enChargement) (e.currentTarget as HTMLElement).style.background = "#fff"; }}
             >
-              {loading ? (
+              {enChargement ? (
                 <>
                   <motion.div
                     animate={{ rotate: 360 }}

@@ -11,7 +11,7 @@ const TEXT_MUTED     = "rgba(246,239,228,0.62)";
 const TEXT_SOFT      = "rgba(246,239,228,0.45)";
 const ACCENT         = "#E8FF5A";
 
-const Field: React.FC<{
+const ChampInput: React.FC<{
   label: string;
   type?: string;
   name: string;
@@ -20,7 +20,7 @@ const Field: React.FC<{
   placeholder?: string;
   icon?: React.ReactNode;
 }> = ({ label, type = "text", name, value, onChange, placeholder, icon }) => {
-  const [focused, setFocused] = useState(false);
+  const [enFocus, setEnFocus] = useState(false);
   return (
     <div>
       <label style={{
@@ -40,15 +40,15 @@ const Field: React.FC<{
           type={type} name={name} value={value}
           onChange={onChange} placeholder={placeholder}
           required
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onFocus={() => setEnFocus(true)}
+          onBlur={() => setEnFocus(false)}
           style={{
             width: "100%", boxSizing: "border-box",
             padding: icon ? "13px 16px 13px 42px" : "13px 16px",
             borderRadius: 14, fontSize: 13, fontWeight: 400,
             color: TEXT_PRIMARY,
-            background: focused ? "rgba(0,0,0,0.52)" : "rgba(0,0,0,0.38)",
-            border: `1px solid ${focused ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
+            background: enFocus ? "rgba(0,0,0,0.52)" : "rgba(0,0,0,0.38)",
+            border: `1px solid ${enFocus ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
             outline: "none", transition: "all 0.2s",
             fontFamily: "'Satoshi', sans-serif",
           }}
@@ -62,26 +62,26 @@ type Step = "email" | "code" | "success";
 
 export default function ResetPassword() {
   const navigate    = useNavigate();
-  const [step, setStep]     = useState<Step>("email");
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail]   = useState("");
-  const [code, setCode]     = useState("");
-  const [newPw, setNewPw]   = useState("");
+  const [etape, setEtape]     = useState<Step>("email");
+  const [enChargement, setEnChargement] = useState(false);
+  const [adresseMail, setAdresseMail]   = useState("");
+  const [codeVerif, setCodeVerif]     = useState("");
+  const [nvMdp, setNvMdp]   = useState("");
 
-  const handleEmail = (e: React.FormEvent) => {
+  const gererEmail = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setStep("code"); }, 1400);
+    setEnChargement(true);
+    setTimeout(() => { setEnChargement(false); setEtape("code"); }, 1400);
   };
 
-  const handleCode = (e: React.FormEvent) => {
+  const gererCode = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setStep("success"); }, 1400);
+    setEnChargement(true);
+    setTimeout(() => { setEnChargement(false); setEtape("success"); }, 1400);
   };
 
-  const stepLabels = ["Email", "Vérification", "Terminé"];
-  const stepIndex  = step === "email" ? 0 : step === "code" ? 1 : 2;
+  const nomEtapes = ["Email", "Vérification", "Terminé"];
+  const indexEtape = etape === "email" ? 0 : etape === "code" ? 1 : 2;
 
   return (
     <div style={{
@@ -135,39 +135,39 @@ export default function ResetPassword() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 36 }}>
-          {stepLabels.map((s, i) => (
+          {nomEtapes.map((s, i) => (
             <React.Fragment key={i}>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
                 <div style={{
                   width: 28, height: 28, borderRadius: 99,
-                  background: i < stepIndex
+                  background: i < indexEtape
                     ? ACCENT
-                    : i === stepIndex
+                    : i === indexEtape
                     ? "rgba(232,255,90,0.18)"
                     : "rgba(255,255,255,0.06)",
-                  border: `1px solid ${i <= stepIndex ? ACCENT : "rgba(255,255,255,0.08)"}`,
+                  border: `1px solid ${i <= indexEtape ? ACCENT : "rgba(255,255,255,0.08)"}`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   transition: "all 0.3s",
                 }}>
-                  {i < stepIndex
+                  {i < indexEtape
                     ? <CheckCircle2 size={13} color="#000" />
                     : <span style={{
                         fontSize: 10, fontWeight: 700,
-                        color: i === stepIndex ? ACCENT : TEXT_SOFT,
+                        color: i === indexEtape ? ACCENT : TEXT_SOFT,
                       }}>{i + 1}</span>
                   }
                 </div>
                 <span style={{
                   fontSize: 8, fontWeight: 500, textTransform: "uppercase",
                   letterSpacing: "0.2em",
-                  color: i === stepIndex ? ACCENT : TEXT_SOFT,
+                  color: i === indexEtape ? ACCENT : TEXT_SOFT,
                   whiteSpace: "nowrap",
                 }}>{s}</span>
               </div>
-              {i < stepLabels.length - 1 && (
+              {i < nomEtapes.length - 1 && (
                 <div style={{
                   flex: 1, height: 1, marginBottom: 22,
-                  background: i < stepIndex
+                  background: i < indexEtape
                     ? `linear-gradient(90deg, ${ACCENT}, ${ACCENT})`
                     : "rgba(255,255,255,0.07)",
                   transition: "background 0.4s",
@@ -179,7 +179,7 @@ export default function ResetPassword() {
 
         <AnimatePresence mode="wait">
 
-          {step === "email" && (
+          {etape === "email" && (
             <motion.div key="email"
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
@@ -193,32 +193,32 @@ export default function ResetPassword() {
               }}>
                 Entrez votre email. Nous vous enverrons un code de vérification.
               </p>
-              <form onSubmit={handleEmail} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                <Field
+              <form onSubmit={gererEmail} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                <ChampInput
                   label="Adresse email"
-                  name="email" value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  name="email" value={adresseMail}
+                  onChange={e => setAdresseMail(e.target.value)}
                   placeholder="moussa@exemple.com"
                   icon={<Mail size={15} />}
                 />
                 <motion.button
-                  type="submit" disabled={loading}
-                  whileHover={{ scale: loading ? 1 : 1.01 }}
-                  whileTap={{ scale: loading ? 1 : 0.98 }}
+                  type="submit" disabled={enChargement}
+                  whileHover={{ scale: enChargement ? 1 : 1.01 }}
+                  whileTap={{ scale: enChargement ? 1 : 0.98 }}
                   style={{
                     width: "100%", padding: "14px 0", borderRadius: 14,
-                    border: "none", cursor: loading ? "default" : "pointer",
-                    background: loading ? "rgba(255,255,255,0.1)" : "#fff",
-                    color: loading ? "rgba(255,255,255,0.4)" : "#000",
+                    border: "none", cursor: enChargement ? "default" : "pointer",
+                    background: enChargement ? "rgba(255,255,255,0.1)" : "#fff",
+                    color: enChargement ? "rgba(255,255,255,0.4)" : "#000",
                     fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                     transition: "background 0.2s, color 0.2s",
                     fontFamily: "'Satoshi', sans-serif",
                   }}
-                  onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLElement).style.background = ACCENT; }}
-                  onMouseLeave={e => { if (!loading) (e.currentTarget as HTMLElement).style.background = "#fff"; }}
+                  onMouseEnter={e => { if (!enChargement) (e.currentTarget as HTMLElement).style.background = ACCENT; }}
+                  onMouseLeave={e => { if (!enChargement) (e.currentTarget as HTMLElement).style.background = "#fff"; }}
                 >
-                  {loading ? (
+                  {enChargement ? (
                     <>
                       <motion.div animate={{ rotate: 360 }}
                         transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
@@ -235,7 +235,7 @@ export default function ResetPassword() {
             </motion.div>
           )}
 
-          {step === "code" && (
+          {etape === "code" && (
             <motion.div key="code"
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
@@ -248,64 +248,64 @@ export default function ResetPassword() {
                 fontWeight: 400, lineHeight: 1.6, marginBottom: 36,
               }}>
                 Code envoyé à{" "}
-                <span style={{ color: ACCENT, fontWeight: 600 }}>{email || "votre email"}</span>.
+                <span style={{ color: ACCENT, fontWeight: 600 }}>{adresseMail || "votre email"}</span>.
                 Saisissez-le ci-dessous avec votre nouveau mot de passe.
               </p>
-              <form onSubmit={handleCode} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                <Field
+              <form onSubmit={gererCode} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <ChampInput
                   label="Code de vérification"
-                  name="code" value={code}
-                  onChange={e => setCode(e.target.value)}
+                  name="code" value={codeVerif}
+                  onChange={e => setCodeVerif(e.target.value)}
                   placeholder="123456"
                   icon={<KeyRound size={15} />}
                 />
-                <Field
+                <ChampInput
                   label="Nouveau mot de passe"
                   type="password"
-                  name="newpw" value={newPw}
-                  onChange={e => setNewPw(e.target.value)}
+                  name="newpw" value={nvMdp}
+                  onChange={e => setNvMdp(e.target.value)}
                   placeholder="••••••••"
                 />
 
-                {newPw.length > 0 && (
+                {nvMdp.length > 0 && (
                   <div>
                     <div style={{ height: 3, borderRadius: 99, background: "rgba(255,255,255,0.07)", overflow: "hidden" }}>
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${Math.min(newPw.length * 8, 100)}%` }}
+                        animate={{ width: `${Math.min(nvMdp.length * 8, 100)}%` }}
                         style={{
                           height: "100%", borderRadius: 99,
-                          background: newPw.length < 6 ? "rgba(255,80,80,0.6)"
-                            : newPw.length < 10 ? "rgba(255,200,60,0.8)"
+                          background: nvMdp.length < 6 ? "rgba(255,80,80,0.6)"
+                            : nvMdp.length < 10 ? "rgba(255,200,60,0.8)"
                             : ACCENT,
                           transition: "background 0.3s",
                         }}
                       />
                     </div>
                     <p style={{ fontSize: 9, color: TEXT_SOFT, marginTop: 5, textTransform: "uppercase", letterSpacing: "0.15em" }}>
-                      {newPw.length < 6 ? "Faible" : newPw.length < 10 ? "Moyen" : "Fort"}
+                      {nvMdp.length < 6 ? "Faible" : nvMdp.length < 10 ? "Moyen" : "Fort"}
                     </p>
                   </div>
                 )}
 
                 <motion.button
-                  type="submit" disabled={loading}
-                  whileHover={{ scale: loading ? 1 : 1.01 }}
-                  whileTap={{ scale: loading ? 1 : 0.98 }}
+                  type="submit" disabled={enChargement}
+                  whileHover={{ scale: enChargement ? 1 : 1.01 }}
+                  whileTap={{ scale: enChargement ? 1 : 0.98 }}
                   style={{
                     marginTop: 8, width: "100%", padding: "14px 0", borderRadius: 14,
-                    border: "none", cursor: loading ? "default" : "pointer",
-                    background: loading ? "rgba(255,255,255,0.1)" : "#fff",
-                    color: loading ? "rgba(255,255,255,0.4)" : "#000",
+                    border: "none", cursor: enChargement ? "default" : "pointer",
+                    background: enChargement ? "rgba(255,255,255,0.1)" : "#fff",
+                    color: enChargement ? "rgba(255,255,255,0.4)" : "#000",
                     fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                     transition: "background 0.2s, color 0.2s",
                     fontFamily: "'Satoshi', sans-serif",
                   }}
-                  onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLElement).style.background = ACCENT; }}
-                  onMouseLeave={e => { if (!loading) (e.currentTarget as HTMLElement).style.background = "#fff"; }}
+                  onMouseEnter={e => { if (!enChargement) (e.currentTarget as HTMLElement).style.background = ACCENT; }}
+                  onMouseLeave={e => { if (!enChargement) (e.currentTarget as HTMLElement).style.background = "#fff"; }}
                 >
-                  {loading ? (
+                  {enChargement ? (
                     <>
                       <motion.div animate={{ rotate: 360 }}
                         transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
@@ -322,7 +322,7 @@ export default function ResetPassword() {
             </motion.div>
           )}
 
-          {step === "success" && (
+          {etape === "success" && (
             <motion.div key="success"
               initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4 }}
@@ -374,7 +374,7 @@ export default function ResetPassword() {
 
         </AnimatePresence>
 
-        {step !== "success" && (
+        {etape !== "success" && (
           <div style={{ textAlign: "center", marginTop: 32 }}>
             <Link to="/login" style={{
               display: "inline-flex", alignItems: "center", gap: 6,

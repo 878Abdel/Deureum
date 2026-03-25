@@ -1,5 +1,4 @@
-﻿"use client";
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, Check } from "lucide-react";
@@ -16,7 +15,7 @@ const TEXT_SECONDARY = "rgba(246,239,228,0.78)";
 const TEXT_MUTED     = "rgba(246,239,228,0.62)";
 const TEXT_SOFT      = "rgba(246,239,228,0.45)";
 
-const StepDots: React.FC<{ current: number; total: number }> = ({ current, total }) => (
+const PointsEtapes: React.FC<{ current: number; total: number }> = ({ current, total }) => (
   <div style={{ display: "flex", gap: 6 }}>
     {Array.from({ length: total }).map((_, i) => (
       <motion.div key={i}
@@ -31,7 +30,7 @@ const StepDots: React.FC<{ current: number; total: number }> = ({ current, total
   </div>
 );
 
-const Field: React.FC<{
+const ChampInput: React.FC<{
   label: string;
   type?: string;
   name: string;
@@ -41,7 +40,7 @@ const Field: React.FC<{
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
 }> = ({ label, type = "text", name, value, onChange, placeholder, prefix, suffix }) => {
-  const [focused, setFocused] = useState(false);
+  const [enFocus, setEnFocus] = useState(false);
   return (
     <div>
       <label style={{
@@ -66,15 +65,15 @@ const Field: React.FC<{
             type={type} name={name} value={value}
             onChange={onChange} placeholder={placeholder}
             required
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
+            onFocus={() => setEnFocus(true)}
+            onBlur={() => setEnFocus(false)}
             style={{
               width: "100%", boxSizing: "border-box",
               padding: suffix ? "13px 44px 13px 16px" : "13px 16px",
               borderRadius: 14, fontSize: 13, fontWeight: 400,
               color: TEXT_PRIMARY,
-              background: focused ? "rgba(0,0,0,0.55)" : "rgba(0,0,0,0.40)",
-              border: `1px solid ${focused ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.09)"}`,
+              background: enFocus ? "rgba(0,0,0,0.55)" : "rgba(0,0,0,0.40)",
+              border: `1px solid ${enFocus ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.09)"}`,
               outline: "none", transition: "all 0.2s",
             }}
           />
@@ -92,22 +91,22 @@ const Field: React.FC<{
 
 export default function Register() {
   const navigate = useNavigate();
-  const [step, setStep]       = useState(0);
-  const [showPw, setShowPw]   = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name:"", phone:"", email:"", password:"", confirm:"" });
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(p => ({ ...p, [e.target.name]: e.target.value }));
+  const [etape, setEtape]       = useState(0);
+  const [voirMdp, setVoirMdp]   = useState(false);
+  const [enChargement, setEnChargement] = useState(false);
+  const [formulaire, setFormulaire] = useState({ name:"", phone:"", email:"", password:"", confirm:"" });
+  const surChangement = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setFormulaire(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const nextStep = (e: React.FormEvent) => {
+  const etapeSuivante = (e: React.FormEvent) => {
     e.preventDefault();
-    if (step < 1) { setStep(s => s + 1); return; }
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setStep(2); }, 1600);
+    if (etape < 1) { setEtape(s => s + 1); return; }
+    setEnChargement(true);
+    setTimeout(() => { setEnChargement(false); setEtape(2); }, 1600);
   };
 
-  const pwStrength = (() => {
-    const p = form.password; if (!p.length) return 0;
+  const forceMdp = (() => {
+    const p = formulaire.password; if (!p.length) return 0;
     let s = 0;
     if (p.length >= 8) s++;
     if (/[A-Z]/.test(p)) s++;
@@ -115,58 +114,58 @@ export default function Register() {
     if (/[^A-Za-z0-9]/.test(p)) s++;
     return s;
   })();
-  const strengthColors = ["#f87171","#fb923c","#E8FF5A","#4ade80"];
-  const strengthLabels = ["Faible","Moyen","Bon","Fort"];
+  const couleursForceMdp = ["#f87171","#fb923c","#E8FF5A","#4ade80"];
+  const labelsForceMdp = ["Faible","Moyen","Bon","Fort"];
 
-  const StepIdentity = (
+  const EtapeIdentite = (
     <motion.div key="s0"
       initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }}
       exit={{ opacity:0, x:-20 }} transition={{ duration:0.3 }}
       style={{ display:"flex", flexDirection:"column", gap:14 }}>
-      <Field label="Nom complet" name="name" value={form.name}
-        onChange={onChange} placeholder="Moussa Ndiaye" />
-      <Field label="Téléphone" name="phone" value={form.phone}
-        onChange={onChange} placeholder="77 000 00 00" prefix="🇸🇳 +221" />
-      <Field label="Email" type="email" name="email" value={form.email}
-        onChange={onChange} placeholder="moussa@exemple.com" />
+      <ChampInput label="Nom complet" name="name" value={formulaire.name}
+        onChange={surChangement} placeholder="Moussa Ndiaye" />
+      <ChampInput label="Téléphone" name="phone" value={formulaire.phone}
+        onChange={surChangement} placeholder="77 000 00 00" prefix="🇸🇳 +221" />
+      <ChampInput label="Email" type="email" name="email" value={formulaire.email}
+        onChange={surChangement} placeholder="moussa@exemple.com" />
     </motion.div>
   );
 
-  const StepSecurity = (
+  const EtapeSecurite = (
     <motion.div key="s1"
       initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }}
       exit={{ opacity:0, x:-20 }} transition={{ duration:0.3 }}
       style={{ display:"flex", flexDirection:"column", gap:14 }}>
-      <Field label="Mot de passe" type={showPw ? "text":"password"}
-        name="password" value={form.password} onChange={onChange}
+      <ChampInput label="Mot de passe" type={voirMdp ? "text":"password"}
+        name="password" value={formulaire.password} onChange={surChangement}
         placeholder="Minimum 8 caractères"
         suffix={
-          <button type="button" onClick={() => setShowPw(!showPw)}
+          <button type="button" onClick={() => setVoirMdp(!voirMdp)}
             style={{ background:"none", border:"none", cursor:"pointer",
               color:"rgba(255,255,255,0.3)", padding:0, display:"flex" }}>
-            {showPw ? <EyeOff size={15}/> : <Eye size={15}/>}
+            {voirMdp ? <EyeOff size={15}/> : <Eye size={15}/>}
           </button>
         }
       />
-      {form.password.length > 0 && (
+      {formulaire.password.length > 0 && (
         <div>
           <div style={{ display:"flex", gap:4, marginBottom:5 }}>
             {[0,1,2,3].map(i => (
               <motion.div key={i}
-                animate={{ background: i < pwStrength ? strengthColors[pwStrength-1] : "rgba(255,255,255,0.08)" }}
+                animate={{ background: i < forceMdp ? couleursForceMdp[forceMdp-1] : "rgba(255,255,255,0.08)" }}
                 style={{ flex:1, height:3, borderRadius:99 }} />
             ))}
           </div>
-          <p style={{ fontSize:10, color: pwStrength > 0 ? strengthColors[pwStrength-1] : TEXT_MUTED,
+          <p style={{ fontSize:10, color: forceMdp > 0 ? couleursForceMdp[forceMdp-1] : TEXT_MUTED,
             fontWeight:500, letterSpacing:"0.12em", textTransform:"uppercase" }}>
-            {pwStrength > 0 ? strengthLabels[pwStrength-1] : ""}
+            {forceMdp > 0 ? labelsForceMdp[forceMdp-1] : ""}
           </p>
         </div>
       )}
-      <Field label="Confirmer" type={showPw ? "text":"password"}
-        name="confirm" value={form.confirm} onChange={onChange}
+      <ChampInput label="Confirmer" type={voirMdp ? "text":"password"}
+        name="confirm" value={formulaire.confirm} onChange={surChangement}
         placeholder="Répétez le mot de passe"
-        suffix={form.confirm.length > 0 && form.confirm === form.password
+        suffix={formulaire.confirm.length > 0 && formulaire.confirm === formulaire.password
           ? <Check size={15} color="#4ade80"/> : null}
       />
       <p style={{ fontSize:11, color:TEXT_SOFT, lineHeight:1.6, fontWeight:400 }}>
@@ -178,7 +177,7 @@ export default function Register() {
     </motion.div>
   );
 
-  const StepDone = (
+  const EtapeTerminee = (
     <motion.div key="s2"
       initial={{ opacity:0, scale:0.95 }} animate={{ opacity:1, scale:1 }}
       transition={{ duration:0.5 }}
@@ -194,7 +193,7 @@ export default function Register() {
       <div>
         <h3 style={{ fontSize:24, fontWeight:600, letterSpacing:"-0.03em",
           color:TEXT_PRIMARY, marginBottom:8 }}>
-          Bienvenue, {form.name.split(" ")[0] || "ami"} 👋
+          Bienvenue, {formulaire.name.split(" ")[0] || "ami"} 👋
         </h3>
         <p style={{ fontSize:13, color:TEXT_MUTED, lineHeight:1.6 }}>
           Votre compte DEUREUM est prêt.<br/>Dalal ak jamm.
@@ -330,7 +329,7 @@ export default function Register() {
           transition={{ duration:0.7 }}
           style={{ width:"100%", maxWidth:400 }}
         >
-          {step < 2 && (
+          {etape < 2 && (
             <>
               <div style={{ marginBottom:36 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:26 }}>
@@ -342,39 +341,39 @@ export default function Register() {
                   justifyContent:"space-between", marginBottom:10 }}>
                   <h1 style={{ fontSize:32, fontWeight:600, letterSpacing:"-0.04em",
                     color:TEXT_PRIMARY, lineHeight:1 }}>
-                    {step === 0 ? "Créer un compte." : "Sécurisez-le."}
+                    {etape === 0 ? "Créer un compte." : "Sécurisez-le."}
                   </h1>
-                  <StepDots current={step} total={2} />
+                  <PointsEtapes current={etape} total={2} />
                 </div>
                 <p style={{ fontSize:13, color:TEXT_SECONDARY, fontWeight:400, lineHeight:1.6 }}>
-                  {step === 0
+                  {etape === 0
                     ? "Gratuit, pour toujours. Aucune carte requise."
                     : "Choisissez un mot de passe solide."}
                 </p>
               </div>
 
-              <form onSubmit={nextStep}>
+              <form onSubmit={etapeSuivante}>
                 <AnimatePresence mode="wait">
-                  {step === 0 ? StepIdentity : StepSecurity}
+                  {etape === 0 ? EtapeIdentite : EtapeSecurite}
                 </AnimatePresence>
 
-                <motion.button type="submit" disabled={loading}
-                  whileHover={{ scale: loading ? 1 : 1.01 }}
-                  whileTap={{ scale: loading ? 1 : 0.98 }}
+                <motion.button type="submit" disabled={enChargement}
+                  whileHover={{ scale: enChargement ? 1 : 1.01 }}
+                  whileTap={{ scale: enChargement ? 1 : 0.98 }}
                   style={{
                     marginTop:22, width:"100%", padding:"14px 0",
                     borderRadius:14, border:"none",
-                    cursor: loading ? "default" : "pointer",
-                    background: loading ? "rgba(255,255,255,0.08)" : "#fff",
-                    color: loading ? "rgba(255,255,255,0.3)" : "#000",
+                    cursor: enChargement ? "default" : "pointer",
+                    background: enChargement ? "rgba(255,255,255,0.08)" : "#fff",
+                    color: enChargement ? "rgba(255,255,255,0.3)" : "#000",
                     fontSize:13, fontWeight:600, letterSpacing:"0.04em",
                     display:"flex", alignItems:"center", justifyContent:"center", gap:8,
                     transition:"background 0.2s, color 0.2s",
                   }}
-                  onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLElement).style.background = "#E8FF5A"; }}
-                  onMouseLeave={e => { if (!loading) (e.currentTarget as HTMLElement).style.background = "#fff"; }}
+                  onMouseEnter={e => { if (!enChargement) (e.currentTarget as HTMLElement).style.background = "#E8FF5A"; }}
+                  onMouseLeave={e => { if (!enChargement) (e.currentTarget as HTMLElement).style.background = "#fff"; }}
                 >
-                  {loading ? (
+                  {enChargement ? (
                     <>
                       <motion.div
                         animate={{ rotate:360 }}
@@ -385,7 +384,7 @@ export default function Register() {
                       />
                       Création…
                     </>
-                  ) : step === 0 ? (
+                  ) : etape === 0 ? (
                     <>Continuer <ArrowRight size={14}/></>
                   ) : (
                     <>Créer mon compte <ArrowRight size={14}/></>
@@ -393,7 +392,7 @@ export default function Register() {
                 </motion.button>
               </form>
 
-              {step === 0 && (
+              {etape === 0 && (
                 <>
                   <div style={{ display:"flex", alignItems:"center", gap:16, margin:"22px 0" }}>
                     <div style={{ flex:1, height:1, background:"rgba(255,255,255,0.08)" }}/>
@@ -437,7 +436,7 @@ export default function Register() {
             </>
           )}
 
-          <AnimatePresence>{step === 2 && StepDone}</AnimatePresence>
+          <AnimatePresence>{etape === 2 && EtapeTerminee}</AnimatePresence>
         </motion.div>
       </div>
     </div>
