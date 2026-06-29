@@ -10,7 +10,7 @@ import card1       from "../assets/card1.png";
 import card2       from "../assets/card2.png";
 import card3       from "../assets/card3.png";
 
-const AnimatedBg: React.FC = () => {
+const FondAnime: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let raf: number, w = 130, dir = 1;
@@ -41,7 +41,7 @@ const AnimatedBg: React.FC = () => {
   );
 };
 
-const TypingText: React.FC = () => {
+const TexteAnimé: React.FC = () => {
   const words = ["Dalal ak jamm","Bienvenue", "Bismillaah", "Sa Xaliss yay borom"];
   const [wi, setWi]   = useState(0);
   const [txt, setTxt] = useState("");
@@ -65,7 +65,7 @@ const TypingText: React.FC = () => {
   );
 };
 
-const Ticker: React.FC = () => {
+const BandeauDefilant: React.FC = () => {
   const items = ["Suivi des dépenses", "·", "Tontine Digitale", "·", "Mobile Money", "·",
     "Épargne Automatique", "·", "Analyse Prédictive", "·", "Wave & Orange Money", "·",
     "Zéro Frais Cachés", "·", "100% Sécurisé", "·"];
@@ -90,7 +90,7 @@ const Ticker: React.FC = () => {
   );
 };
 
-const DashboardWidget: React.FC = () => {
+const AperçuDashbord: React.FC = () => {
   const card = { bg: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20 };
   return (
     <div style={{ background: "#080808", border: "1px solid rgba(255,255,255,0.08)",
@@ -218,7 +218,7 @@ const DashboardWidget: React.FC = () => {
   );
 };
 
-const FEATURES = [
+const FONCTIONNALITES = [
   {
     num: "01",
     title: "Mobile Money Hub",
@@ -263,14 +263,14 @@ const FEATURES = [
   },
 ];
 
-const STATS = [
+const STATISTIQUES = [
   { val: "1M+",  label: "Utilisateurs actifs"  },
   { val: "98%",  label: "Précision IA"          },
   { val: "30s",  label: "Pour s'inscrire"       },
   { val: "0 F",  label: "Frais cachés"          },
 ];
 
-const TESTIMONIALS = [
+const TEMOIGNAGES = [
   { name: "Aminata Diallo", role: "Entrepreneuse · Dakar",
     text: "DEUREUM a complètement changé ma relation à l'argent. Je vois tout, je contrôle tout. C'est l'outil qu'on attendait." },
   { name: "Moussa Ba",  role: "Ingénieur · Abidjan",
@@ -281,7 +281,7 @@ const TESTIMONIALS = [
     text: "Simple, rapide, en français. Même ma mère s'en sert pour ses tontines. C'est la finance pour tout le monde." },
 ];
 
-const PLANS = [
+const FORFAITS = [
   {
     name: "Essentiel", price: "0", period: "pour toujours",
     features: ["Suivi revenus & dépenses", "Solde en temps réel", "5 catégories", "Rapport mensuel PDF", "1 objectif d'épargne"],
@@ -299,11 +299,11 @@ const PLANS = [
   },
 ];
 
-const Navbar: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
+const BarreNavBar: React.FC = () => {
+  const [defilé, setDefilé] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 50);
+    const fn = () => setDefilé(window.scrollY > 50);
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
@@ -320,12 +320,12 @@ const Navbar: React.FC = () => {
     >
       <div style={{
         display: "flex", alignItems: "center", gap: 4,
-        background: scrolled ? "rgba(5,5,5,0.88)" : "rgba(5,5,5,0.5)",
+        background: defilé ? "rgba(5,5,5,0.88)" : "rgba(5,5,5,0.5)",
         backdropFilter: "blur(20px)",
         border: "1px solid rgba(255,255,255,0.08)",
         borderRadius: 99, padding: "8px 12px",
         transition: "all 0.4s ease",
-        boxShadow: scrolled ? "0 8px 40px rgba(0,0,0,0.5)" : "none",
+        boxShadow: defilé ? "0 8px 40px rgba(0,0,0,0.5)" : "none",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8,
           paddingRight: 16, borderRight: "1px solid rgba(255,255,255,0.08)", marginRight: 8 }}>
@@ -385,9 +385,9 @@ const SectionHeading: React.FC<{ children: React.ReactNode; light?: boolean }> =
 export default function LandingPage() {
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
-  const heroScale   = useTransform(scrollYProgress, [0, 0.18], [1, 0.88]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.18], [1, 0]);
-  const heroBlurVal = useTransform(scrollYProgress, [0, 0.18], [0, 16]);
+  const echelleHero   = useTransform(scrollYProgress, [0, 0.18], [1, 0.88]);
+  const opaciteHero = useTransform(scrollYProgress, [0, 0.18], [1, 0]);
+  const flouHero = useTransform(scrollYProgress, [0, 0.18], [0, 16]);
 
   const S: React.CSSProperties = { fontFamily: "'Satoshi', sans-serif" };
 
@@ -399,14 +399,14 @@ export default function LandingPage() {
         ::-webkit-scrollbar { display: none; }
       `}</style>
 
-      <AnimatedBg />
-      <Navbar />
+      <FondAnime />
+      <BarreNavBar />
 
       <section style={{ position: "relative", height: "100vh", width: "100%",
         display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", zIndex: 1 }}>
 
-        <motion.div style={{ scale: heroScale, opacity: heroOpacity,
-          filter: useTransform(heroBlurVal, v => `blur(${v}px)`),
+        <motion.div style={{ scale: echelleHero, opacity: opaciteHero,
+          filter: useTransform(flouHero, v => `blur(${v}px)`),
           position: "absolute", inset: 0 }}>
           <img src={deureumHero} alt=""
             style={{ width: "100%", height: "100%", objectFit: "cover",
@@ -417,7 +417,7 @@ export default function LandingPage() {
             background: "linear-gradient(to right, rgba(3,3,3,0.7) 0%, transparent 30%, transparent 70%, rgba(3,3,3,0.7) 100%)" }} />
         </motion.div>
 
-        <motion.div style={{ opacity: heroOpacity, position: "relative", zIndex: 10,
+        <motion.div style={{ opacity: opaciteHero, position: "relative", zIndex: 10,
           display: "flex", flexDirection: "column", alignItems: "center",
           width: "100%", maxWidth: 900, padding: "0 40px" }}>
 
@@ -434,7 +434,7 @@ export default function LandingPage() {
               <h1 style={{ fontSize: "clamp(2.8rem, 8vw, 6rem)", fontWeight: 600,
                 letterSpacing: "-0.04em", lineHeight: 1, color: "#fff",
                 fontStyle: "italic" }}>
-                <TypingText />
+                <TexteAnimé />
               </h1>
               <p style={{ fontSize: 11, fontWeight: 400, letterSpacing: "0.4em",
                 textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginTop: 16 }}>
@@ -483,7 +483,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <div style={{ position: "relative", zIndex: 20 }}><Ticker /></div>
+      <div style={{ position: "relative", zIndex: 20 }}><BandeauDefilant /></div>
 
       <section id="vision" style={{ position: "relative", zIndex: 20,
         padding: "120px 40px", maxWidth: 1200, margin: "0 auto" }}>
@@ -500,7 +500,7 @@ export default function LandingPage() {
         </div>
 
         <div>
-          <DashboardWidget />
+          <AperçuDashbord />
         </div>
       </section>
 
@@ -514,7 +514,7 @@ export default function LandingPage() {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
-          {FEATURES.map((f, i) => (
+          {FONCTIONNALITES.map((f, i) => (
             <div key={i}
               style={{
                 background: f.accent ? "#fff" : "rgba(255,255,255,0.03)",
@@ -548,7 +548,7 @@ export default function LandingPage() {
         padding: "60px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto",
           display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {STATS.map((s, i) => (
+          {STATISTIQUES.map((s, i) => (
             <div key={i} style={{ textAlign: "center" }}>
               <p style={{ fontSize: "clamp(36px, 4vw, 56px)", fontWeight: 700,
                 letterSpacing: "-0.04em", color: i === 0 ? "#E8FF5A" : "#fff", lineHeight: 1 }}>
@@ -637,7 +637,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
-            {TESTIMONIALS.map((t, i) => (
+            {TEMOIGNAGES.map((t, i) => (
               <div key={i}
                 style={{ background: "#f8f8f8", borderRadius: 20, padding: "36px 32px" }}>
                 <p style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(0,0,0,0.55)",
@@ -672,7 +672,7 @@ export default function LandingPage() {
             </SectionHeading>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
-            {PLANS.map((plan, i) => (
+            {FORFAITS.map((plan, i) => (
               <div key={i}
                 style={{
                   background: plan.highlight ? "#000" : "#f8f8f8",
